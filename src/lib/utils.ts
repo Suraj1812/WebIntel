@@ -18,6 +18,36 @@ export function formatNumber(value: number) {
   return new Intl.NumberFormat("en-US").format(value);
 }
 
+export function formatUtcDate(value: Date | string) {
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeZone: "UTC",
+  }).format(new Date(value));
+}
+
+export function formatUtcDateTime(value: Date | string) {
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "UTC",
+  }).format(new Date(value));
+}
+
+export function getSafeRedirectPath(
+  value: string | null | undefined,
+  fallback = "/dashboard",
+) {
+  if (!value) {
+    return fallback;
+  }
+
+  if (!value.startsWith("/") || value.startsWith("//")) {
+    return fallback;
+  }
+
+  return value;
+}
+
 export function truncate(value: string, max = 140) {
   if (value.length <= max) {
     return value;

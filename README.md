@@ -27,6 +27,8 @@ WebIntel AI is a production-ready SaaS starter for AI-powered website intelligen
 ├── postcss.config.mjs
 ├── prisma
 │   └── schema.prisma
+├── scripts
+│   └── local-doctor.mjs
 ├── prisma.config.ts
 ├── public
 │   ├── brand
@@ -88,15 +90,14 @@ WebIntel AI is a production-ready SaaS starter for AI-powered website intelligen
 │   │   ├── layout
 │   │   │   ├── app-shell.tsx
 │   │   │   ├── marketing-header.tsx
-│   │   │   └── theme-toggle.tsx
 │   │   ├── marketing/landing-page.tsx
 │   │   ├── providers
-│   │   │   ├── app-providers.tsx
-│   │   │   └── theme-provider.tsx
+│   │   │   └── app-providers.tsx
 │   │   ├── report
 │   │   │   ├── report-export-button.tsx
 │   │   │   ├── report-shell.tsx
 │   │   │   ├── save-report-button.tsx
+│   │   │   ├── share-report-button.tsx
 │   │   │   └── score-ring.tsx
 │   │   ├── scan/scan-workbench.tsx
 │   │   ├── settings/settings-form.tsx
@@ -109,6 +110,7 @@ WebIntel AI is a production-ready SaaS starter for AI-powered website intelligen
 │   │       ├── separator.tsx
 │   │       └── textarea.tsx
 │   ├── lib
+│   │   ├── api-errors.ts
 │   │   ├── auth.ts
 │   │   ├── constants.ts
 │   │   ├── env.ts
@@ -134,10 +136,10 @@ WebIntel AI is a production-ready SaaS starter for AI-powered website intelligen
 
 ## Environment variables
 
-Copy `.env.example` to `.env` and set:
+A local `.env` with safe development defaults is already present in this workspace. If you need to recreate it, copy `.env.example` to `.env` and set:
 
 ```bash
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/webintel_ai?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/webintel_ai?schema=public"
 SESSION_SECRET="replace-with-a-long-random-string"
 OPENAI_API_KEY=""
 OPENAI_REPORT_MODEL="gpt-5.4-mini"
@@ -151,10 +153,10 @@ STORAGE_ROOT="./storage"
 
 ## Local setup
 
-1. Start Postgres:
+1. Start Docker Desktop, then boot Postgres:
 
 ```bash
-docker compose up -d postgres
+npm run db:start
 ```
 
 2. Install web dependencies:
@@ -163,23 +165,25 @@ docker compose up -d postgres
 npm install
 ```
 
-3. Generate Prisma client and run the first migration:
+3. Prepare the database client and schema:
 
 ```bash
-npm run prisma:generate
-npx prisma migrate dev --name init
+npm run db:setup
 ```
 
-4. Set up the scraper service:
+4. Install scraper dependencies and Chromium once:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r scraper_service/requirements.txt
-playwright install chromium
+npm run scraper:install
 ```
 
-5. Run both services:
+5. Check local readiness:
+
+```bash
+npm run doctor
+```
+
+6. Run both services:
 
 ```bash
 npm run dev:all
@@ -192,12 +196,25 @@ npm run dev
 npm run scraper:dev
 ```
 
+If you specifically want scraper hot reload while editing Python files:
+
+```bash
+npm run scraper:watch
+```
+
+7. Verify the stack:
+
+```bash
+curl http://127.0.0.1:3000/api/health
+```
+
 ## API routes
 
 - `POST /api/auth/signup`
 - `POST /api/auth/login`
 - `POST /api/auth/logout`
 - `GET /api/auth/session`
+- `GET /api/health`
 - `POST /api/scans`
 - `GET /api/reports`
 - `GET /api/reports/:reportId`

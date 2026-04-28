@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import re
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
@@ -121,7 +123,7 @@ def _extract_links(soup: BeautifulSoup, final_url: str, domain: str) -> list[dic
     return items
 
 
-def _extract_images(soup: BeautifulSoup, final_url: str) -> list[dict[str, str | None]]:
+def _extract_images(soup: BeautifulSoup, final_url: str) -> list[dict[str, Optional[str]]]:
     assets = []
     for tag in soup.find_all("img", src=True):
         assets.append(
@@ -139,7 +141,7 @@ def _extract_images(soup: BeautifulSoup, final_url: str) -> list[dict[str, str |
 def _extract_media(
     soup: BeautifulSoup,
     final_url: str,
-    images: list[dict[str, str | None]],
+    images: list[dict[str, Optional[str]]],
     meta_tags: dict[str, str],
 ) -> dict[str, Any]:
     logo = None
@@ -248,7 +250,9 @@ def _extract_content_intelligence(
 
 
 def _extract_performance(
-    images: list[dict[str, str | None]], scripts: list[str | None], stylesheets: list[str | None]
+    images: list[dict[str, Optional[str]]],
+    scripts: list[Optional[str]],
+    stylesheets: list[Optional[str]],
 ) -> dict[str, Any]:
     image_count = len(images)
     script_count = len([src for src in scripts if src])
@@ -309,12 +313,12 @@ def _extract_security(headers: dict[str, str], html: str, soup: BeautifulSoup) -
     }
 
 
-def _read_language(soup: BeautifulSoup) -> str | None:
+def _read_language(soup: BeautifulSoup) -> Optional[str]:
     html_tag = soup.find("html")
     return html_tag.get("lang") if html_tag else None
 
 
-def _find_favicon(soup: BeautifulSoup, final_url: str) -> str | None:
+def _find_favicon(soup: BeautifulSoup, final_url: str) -> Optional[str]:
     for rel in ["icon", "shortcut icon", "apple-touch-icon"]:
         icon = soup.find(
             "link",
@@ -345,8 +349,8 @@ def _find_primary_cta(soup: BeautifulSoup) -> str:
 
 def _detect_stack(
     html: str,
-    scripts: list[str | None],
-    stylesheets: list[str | None],
+    scripts: list[Optional[str]],
+    stylesheets: list[Optional[str]],
     headers: dict[str, str],
     meta_tags: dict[str, str],
 ) -> tuple[list[str], list[str], list[str], list[str], list[str], list[str]]:
@@ -459,7 +463,9 @@ def _summarize_design(
     )
 
 
-def _infer_country(headers: dict[str, str], meta_tags: dict[str, str], domain: str) -> str | None:
+def _infer_country(
+    headers: dict[str, str], meta_tags: dict[str, str], domain: str
+) -> Optional[str]:
     if domain.endswith(".co.uk"):
         return "United Kingdom"
     if domain.endswith(".de"):

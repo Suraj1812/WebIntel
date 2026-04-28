@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   ArrowRight,
   BellRing,
@@ -108,6 +110,37 @@ const reveal = {
 } as const;
 
 export function LandingPage() {
+  const router = useRouter();
+  const [heroUrl, setHeroUrl] = useState("");
+  const [isRouting, setIsRouting] = useState(false);
+
+  async function handleHeroSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmedUrl = heroUrl.trim();
+
+    if (!trimmedUrl || isRouting) {
+      return;
+    }
+
+    setIsRouting(true);
+
+    try {
+      const response = await fetch("/api/auth/session", { cache: "no-store" });
+      const payload = (await response.json().catch(() => ({ user: null }))) as {
+        user?: { id: string } | null;
+      };
+
+      const scanPath = `/scan?url=${encodeURIComponent(trimmedUrl)}`;
+      const destination = payload.user
+        ? scanPath
+        : `/signup?next=${encodeURIComponent(scanPath)}`;
+
+      router.push(destination);
+    } finally {
+      setIsRouting(false);
+    }
+  }
+
   return (
     <div className="pb-24">
       <section className="marketing-shell section-shell pt-10">
@@ -123,14 +156,21 @@ export function LandingPage() {
               </p>
             </div>
 
-            <form action="/scan" className="surface-strong rounded-[2rem] p-3 md:flex md:items-center md:gap-3">
+            <form
+              onSubmit={handleHeroSubmit}
+              className="surface-strong rounded-[2rem] p-3 md:flex md:items-center md:gap-3"
+            >
               <Input
                 name="url"
+                type="url"
+                value={heroUrl}
+                onChange={(event) => setHeroUrl(event.target.value)}
                 placeholder="Enter a public website URL"
                 className="h-14 border-0 bg-transparent text-base shadow-none focus:ring-0"
+                required
               />
               <div className="mt-3 flex gap-3 md:mt-0">
-                <Button type="submit" size="lg" className="min-w-[12rem]">
+                <Button type="submit" size="lg" className="min-w-[12rem]" disabled={isRouting}>
                   Run audit
                   <ArrowRight className="h-4 w-4" />
                 </Button>
@@ -340,9 +380,12 @@ export function LandingPage() {
                     {cell}
                   </div>
                 ))}
-                {comparisonRows.map((row) =>
+                {comparisonRows.map((row, rowIndex) =>
                   row.map((cell, index) => (
-                    <div key={`${row[0]}-${cell}`} className={`bg-background/80 px-4 py-4 leading-6 ${index === 0 ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+                    <div
+                      key={`${row[0]}-${rowIndex}-${index}`}
+                      className={`bg-background/80 px-4 py-4 leading-6 ${index === 0 ? "font-medium text-foreground" : "text-muted-foreground"}`}
+                    >
                       {cell}
                     </div>
                   )),
@@ -441,7 +484,13 @@ export function LandingPage() {
                     </div>
                   ))}
                 </div>
-                <Button asChild className="mt-6 w-full" variant={index === 1 ? "default" : "secondary"} href="/signup">
+                <Button
+                  asChild
+                  className="mt-6 w-full"
+                  variant={index === 1 ? "default" : "secondary"}
+                  href="/signup"
+                  prefetch={false}
+                >
                   Choose {plan.name}
                 </Button>
               </div>
@@ -476,7 +525,7 @@ export function LandingPage() {
             This is the difference between a screenshot tool and a product. WebIntel helps you remember what good looked like last week, last quarter, and against the competitor you care about most.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild size="lg" href="/signup">
+            <Button asChild size="lg" href="/signup" prefetch={false}>
               Start free
             </Button>
             <Button asChild size="lg" variant="outline" href="/scan">

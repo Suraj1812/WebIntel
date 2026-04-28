@@ -7,10 +7,17 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
+    "doctor": "node scripts/local-doctor.mjs",
+    "db:start": "docker compose up -d postgres",
+    "db:stop": "docker compose down",
+    "db:push": "prisma db push",
+    "db:setup": "npm run prisma:generate && npm run db:push",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "scraper:dev": "python3 -m uvicorn scraper_service.app.main:app --reload --port 8001",
+    "scraper:install": "python3 -m pip install -r scraper_service/requirements.txt && python3 -m playwright install chromium",
+    "scraper:dev": "python3 -m uvicorn scraper_service.app.main:app --host 127.0.0.1 --port 8001",
+    "scraper:watch": "python3 -m uvicorn scraper_service.app.main:app --reload --host 127.0.0.1 --port 8001",
     "dev:all": "concurrently -k -n web,scraper -c blue,green \"npm run dev\" \"npm run scraper:dev\""
   },
   "dependencies": {

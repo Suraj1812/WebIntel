@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import os
 from datetime import datetime, timezone
 from pathlib import Path
 from time import time
+from typing import Optional
 from urllib.parse import urlparse
 
 import httpx
@@ -109,7 +112,7 @@ async def _fetch_http_response(url: str) -> httpx.Response:
         return response
 
 
-async def _check_auxiliary_file(url: str, suffix: str) -> str | None:
+async def _check_auxiliary_file(url: str, suffix: str) -> Optional[str]:
     parsed = urlparse(url)
     candidate = f"{parsed.scheme}://{parsed.netloc}{suffix}"
     async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as client:

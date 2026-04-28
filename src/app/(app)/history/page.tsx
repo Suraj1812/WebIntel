@@ -5,6 +5,7 @@ import { getPrisma } from "@/lib/prisma";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageIntro } from "@/components/shared/page-intro";
 import { Badge } from "@/components/ui/badge";
+import { formatUtcDateTime } from "@/lib/utils";
 
 export default async function HistoryPage() {
   const user = await requireUser();
@@ -39,7 +40,7 @@ export default async function HistoryPage() {
               >
                 <div>
                   <div className="text-lg font-semibold tracking-[-0.03em]">{report.domain}</div>
-                  <div className="mt-1 text-sm text-muted-foreground">{new Date(report.createdAt).toLocaleString()}</div>
+                  <div className="mt-1 text-sm text-muted-foreground">{formatUtcDateTime(report.createdAt)}</div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Badge variant="outline">{report.scoreOverall}</Badge>

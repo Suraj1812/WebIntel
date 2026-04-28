@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { assertValidEmail, applyRateLimit, getClientIpFromHeaders } from "@/lib/security";
 import { getPrisma } from "@/lib/prisma";
 import { setSession } from "@/lib/auth";
+import { createApiErrorResponse } from "@/lib/api-errors";
 import { verifyPassword } from "@/services/auth/password";
 import { logUsage } from "@/services/usage";
 
@@ -40,9 +41,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ user: { id: user.id, email: user.email, name: user.name } });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unable to log in." },
-      { status: 400 },
-    );
+    return createApiErrorResponse(error, "Unable to log in.");
   }
 }

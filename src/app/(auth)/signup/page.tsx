@@ -1,42 +1,56 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getSafeRedirectPath } from "@/lib/utils";
 
-export default function SignupPage() {
+function SignupCard({ nextPath }: { nextPath: string }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const loginHref =
+    nextPath === "/dashboard"
+      ? "/login"
+      : `/login?next=${encodeURIComponent(nextPath)}`;
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (isLoading) {
+      return;
+    }
+
     setIsLoading(true);
 
     const formData = new FormData(event.currentTarget);
     const payload = Object.fromEntries(formData.entries());
 
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    const data = await response.json();
-    setIsLoading(false);
+      const data = (await response.json().catch(() => ({}))) as { error?: string };
+      if (!response.ok) {
+        toast.error(data.error || "Unable to create your account.");
+        return;
+      }
 
-    if (!response.ok) {
-      toast.error(data.error || "Unable to create your account.");
-      return;
+      toast.success("Account created.");
+      router.push(nextPath);
+      router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to create your account.");
+    } finally {
+      setIsLoading(false);
     }
-
-    toast.success("Account created.");
-    router.push("/dashboard");
-    router.refresh();
   }
 
   return (
@@ -50,20 +64,28 @@ export default function SignupPage() {
         <div className="grid gap-5 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="name">Full name</Label>
-            <Input id="name" name="name" required className="h-[3.25rem]" />
+            <Input id="name" name="name" autoComplete="name" required className="h-[3.25rem]" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="company">Company</Label>
-            <Input id="company" name="company" className="h-[3.25rem]" />
+            <Input id="company" name="company" autoComplete="organization" className="h-[3.25rem]" />
           </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required className="h-[3.25rem]" />
+          <Input id="email" name="email" type="email" autoComplete="email" required className="h-[3.25rem]" />
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" name="password" type="password" required minLength={8} className="h-[3.25rem]" />
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            className="h-[3.25rem]"
+          />
         </div>
         <Button className="w-full" size="lg" disabled={isLoading}>
           {isLoading ? "Creating account..." : "Create account"}
@@ -71,10 +93,25 @@ export default function SignupPage() {
       </form>
       <p className="mt-6 text-sm leading-6 text-muted-foreground">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-foreground underline-offset-4 hover:underline">
+        <Link href={loginHref} className="font-medium text-foreground underline-offset-4 hover:underline">
           Sign in
         </Link>
       </p>
     </div>
+  );
+}
+
+function SignupContent() {
+  const searchParams = useSearchParams();
+  const nextPath = getSafeRedirectPath(searchParams.get("next"));
+
+  return <SignupCard nextPath={nextPath} />;
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<SignupCard nextPath="/dashboard" />}>
+      <SignupContent />
+    </Suspense>
   );
 }

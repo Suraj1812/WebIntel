@@ -13,6 +13,7 @@ import { ReportExportButton } from "@/components/report/report-export-button";
 import { SaveReportButton } from "@/components/report/save-report-button";
 import { ShareReportButton } from "@/components/report/share-report-button";
 import { ScoreBar } from "@/components/shared/score-bar";
+import { formatUtcDateTime } from "@/lib/utils";
 
 const labels: Record<(typeof REPORT_SECTIONS)[number], string> = {
   overview: "Overview",
@@ -79,7 +80,7 @@ export function ReportShell({
             <MetricCard label="Language" value={report.overview.language || "Unknown"} />
             <MetricCard label="Country estimate" value={report.overview.countryEstimate || "Unknown"} />
             <MetricCard label="HTTPS" value={report.overview.https ? "Enabled" : "Not detected"} />
-            <MetricCard label="First seen" value={new Date(createdAt).toLocaleString()} />
+            <MetricCard label="First seen" value={formatUtcDateTime(createdAt)} />
             <MetricCard label="Favicon" value={report.overview.faviconUrl || "Not found"} />
           </div>
         ),
@@ -99,8 +100,8 @@ export function ReportShell({
               <SurfaceBlock title="Primary colors">
                 <div className="flex flex-wrap gap-3">
                   {report.design.primaryColors.length ? (
-                    report.design.primaryColors.map((color) => (
-                      <div key={color} className="flex items-center gap-3 rounded-full border border-border bg-background/72 px-4 py-2 text-sm">
+                    report.design.primaryColors.map((color, index) => (
+                      <div key={`${color}-${index}`} className="flex items-center gap-3 rounded-full border border-border bg-background/72 px-4 py-2 text-sm">
                         <span className="h-4 w-4 rounded-full border border-border" style={{ backgroundColor: color }} />
                         {color}
                       </div>
@@ -113,8 +114,8 @@ export function ReportShell({
               <SurfaceBlock title="Font families">
                 <div className="flex flex-wrap gap-3">
                   {report.design.fontFamilies.length ? (
-                    report.design.fontFamilies.map((font) => (
-                      <div key={font} className="rounded-full border border-border bg-background/72 px-4 py-2 text-sm">
+                    report.design.fontFamilies.map((font, index) => (
+                      <div key={`${font}-${index}`} className="rounded-full border border-border bg-background/72 px-4 py-2 text-sm">
                         {font}
                       </div>
                     ))
@@ -300,7 +301,7 @@ export function ReportShell({
               <Badge variant="accent">{report.domain}</Badge>
               <Badge variant="outline">
                 <Clock3 className="mr-1 h-3.5 w-3.5" />
-                {new Date(createdAt).toLocaleString()}
+                {formatUtcDateTime(createdAt)}
               </Badge>
             </div>
             <div>
@@ -482,8 +483,8 @@ function TechStackGroup({ title, items }: { title: string; items: string[] }) {
     <SurfaceBlock title={title}>
       <div className="flex flex-wrap gap-2">
         {items.length ? (
-          items.map((item) => (
-            <Badge key={item} variant="outline">
+          items.map((item, index) => (
+            <Badge key={`${item}-${index}`} variant="outline">
               {item}
             </Badge>
           ))
@@ -504,8 +505,8 @@ function ListRows({
 }) {
   return items.length ? (
     <div className="space-y-2">
-      {items.map((item) => (
-        <div key={item} className="rounded-[1.2rem] bg-card px-3 py-3 text-sm leading-6">
+      {items.map((item, index) => (
+        <div key={`${item}-${index}`} className="rounded-[1.2rem] bg-card px-3 py-3 text-sm leading-6">
           {item}
         </div>
       ))}
@@ -524,9 +525,9 @@ function MediaRows({
 }) {
   return items.length ? (
     <div className="space-y-2">
-      {items.map((item) => (
+      {items.map((item, index) => (
         <a
-          key={item.url}
+          key={`${item.url}-${index}`}
           href={item.url}
           target="_blank"
           rel="noreferrer"
@@ -554,8 +555,8 @@ function ScreenshotGallery({ report }: { report: WebsiteReport }) {
 
   return screenshots.length ? (
     <div className="grid gap-4 md:grid-cols-3">
-      {screenshots.map((shot) => (
-        <div key={shot.label} className="overflow-hidden rounded-[1.8rem] border border-border bg-background/72">
+      {screenshots.map((shot, index) => (
+        <div key={`${shot.label}-${index}`} className="overflow-hidden rounded-[1.8rem] border border-border bg-background/72">
           <div className="border-b border-border px-4 py-3 text-sm font-medium text-muted-foreground">{shot.label}</div>
           <Image
             src={shot.src}

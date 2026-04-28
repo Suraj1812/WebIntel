@@ -39,10 +39,10 @@ export async function MarketingHeader() {
               </>
             ) : (
               <>
-                <Button asChild variant="ghost" href="/login">
+                <Button asChild variant="ghost" href="/login" prefetch={false}>
                   Log in
                 </Button>
-                <Button asChild href="/signup">
+                <Button asChild href="/signup" prefetch={false}>
                   Start free
                 </Button>
               </>

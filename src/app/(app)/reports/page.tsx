@@ -7,6 +7,7 @@ import { PageIntro } from "@/components/shared/page-intro";
 import { ScoreBar } from "@/components/shared/score-bar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { formatUtcDate } from "@/lib/utils";
 
 export default async function ReportsPage() {
   const user = await requireUser();
@@ -53,7 +54,7 @@ export default async function ReportsPage() {
                 <ScoreBar label="Overall signal" score={report.scoreOverall} />
                 <div className="flex flex-wrap gap-2">
                   <Badge variant={report.status === "COMPLETE" ? "success" : "muted"}>{report.status}</Badge>
-                  <Badge variant="outline">{new Date(report.createdAt).toLocaleDateString()}</Badge>
+                  <Badge variant="outline">{formatUtcDate(report.createdAt)}</Badge>
                 </div>
               </div>
             </Link>

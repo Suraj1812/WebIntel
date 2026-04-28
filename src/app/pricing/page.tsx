@@ -55,7 +55,13 @@ export default function PricingPage() {
                       </div>
                     ))}
                   </div>
-                  <Button asChild className="mt-6 w-full" variant={index === 1 ? "default" : "secondary"} href="/signup">
+                  <Button
+                    asChild
+                    className="mt-6 w-full"
+                    variant={index === 1 ? "default" : "secondary"}
+                    href="/signup"
+                    prefetch={false}
+                  >
                     Start with {plan.name}
                   </Button>
                 </div>
@@ -76,9 +82,12 @@ export default function PricingPage() {
                   {item}
                 </div>
               ))}
-              {featureMatrix.map((row) =>
+              {featureMatrix.map((row, rowIndex) =>
                 row.map((item, index) => (
-                  <div key={`${row[0]}-${item}`} className={`bg-background/74 px-4 py-4 leading-6 ${index === 0 ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+                  <div
+                    key={`${row[0]}-${rowIndex}-${index}`}
+                    className={`bg-background/74 px-4 py-4 leading-6 ${index === 0 ? "font-medium text-foreground" : "text-muted-foreground"}`}
+                  >
                     {item}
                   </div>
                 )),
@@ -94,7 +103,7 @@ export default function PricingPage() {
               Start free, run a real audit, save the report, and decide whether compare mode, history, exports, and team access would earn their seat in your workflow.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <Button asChild size="lg" href="/signup">
+              <Button asChild size="lg" href="/signup" prefetch={false}>
                 Create workspace
               </Button>
               <Button asChild size="lg" variant="outline" href="/scan">

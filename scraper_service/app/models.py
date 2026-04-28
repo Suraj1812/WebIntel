@@ -1,4 +1,6 @@
-from typing import Literal
+from __future__ import annotations
+
+from typing import Literal, Optional
 
 from pydantic import BaseModel, HttpUrl
 
@@ -11,4 +13,4 @@ class MediaAsset(BaseModel):
     url: str
     label: str
     type: Literal["image", "video"]
-    alt: str | None = None
+    alt: Optional[str] = None
