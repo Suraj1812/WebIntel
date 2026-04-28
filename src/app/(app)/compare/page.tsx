@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { getPrisma } from "@/lib/prisma";
 import type { WebsiteReport } from "@/types/report";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
@@ -29,9 +30,10 @@ export default async function ComparePage({
           <CardTitle>Compare two reports</CardTitle>
         </CardHeader>
         <CardContent>
-          <form className="grid gap-4 md:grid-cols-2">
+          <form className="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
             <Input name="left" defaultValue={left} placeholder="Left report id" list="report-options" />
             <Input name="right" defaultValue={right} placeholder="Right report id" list="report-options" />
+            <Button type="submit">Compare</Button>
             <datalist id="report-options">
               {reports.map((report) => (
                 <option key={report.id} value={report.id}>

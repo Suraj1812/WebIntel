@@ -12,8 +12,17 @@ export default async function ReportDetailPage({
   const user = await requireUser();
   const { reportId } = await params;
 
-  const report = await getPrisma().report.findFirst({
+  const prisma = getPrisma();
+  const report = await prisma.report.findFirst({
     where: { id: reportId, userId: user.id },
+  });
+  const savedReport = await prisma.savedReport.findUnique({
+    where: {
+      userId_reportId: {
+        userId: user.id,
+        reportId,
+      },
+    },
   });
 
   if (!report || !report.reportData) {
@@ -25,6 +34,7 @@ export default async function ReportDetailPage({
       reportId={report.id}
       report={report.reportData as WebsiteReport}
       createdAt={report.createdAt.toISOString()}
+      isSaved={Boolean(savedReport)}
     />
   );
 }

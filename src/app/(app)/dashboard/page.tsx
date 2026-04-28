@@ -15,21 +15,32 @@ export default async function DashboardPage() {
   startOfMonth.setUTCDate(1);
   startOfMonth.setUTCHours(0, 0, 0, 0);
 
-  const [reports, savedCount] = await Promise.all([
+  const [reports, monthlyScans, averageAggregate, savedCount] = await Promise.all([
     prisma.report.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
       take: 6,
+    }),
+    prisma.report.count({
+      where: {
+        userId: user.id,
+        createdAt: {
+          gte: startOfMonth,
+        },
+      },
+    }),
+    prisma.report.aggregate({
+      where: { userId: user.id },
+      _avg: {
+        scoreOverall: true,
+      },
     }),
     prisma.savedReport.count({
       where: { userId: user.id },
     }),
   ]);
 
-  const monthlyScans = reports.filter((report) => report.createdAt >= startOfMonth).length;
-  const averageScore = reports.length
-    ? Math.round(reports.reduce((acc, report) => acc + report.scoreOverall, 0) / reports.length)
-    : 0;
+  const averageScore = Math.round(averageAggregate._avg.scoreOverall || 0);
 
   return (
     <div className="space-y-6">

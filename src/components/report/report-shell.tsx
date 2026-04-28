@@ -9,6 +9,7 @@ import { REPORT_SECTIONS } from "@/lib/constants";
 import type { WebsiteReport } from "@/types/report";
 import { ScoreRing } from "@/components/report/score-ring";
 import { ReportExportButton } from "@/components/report/report-export-button";
+import { SaveReportButton } from "@/components/report/save-report-button";
 
 const labels: Record<(typeof REPORT_SECTIONS)[number], string> = {
   overview: "Overview",
@@ -27,10 +28,12 @@ export function ReportShell({
   reportId,
   report,
   createdAt,
+  isSaved,
 }: {
   reportId: string;
   report: WebsiteReport;
   createdAt: string;
+  isSaved: boolean;
 }) {
   const [activeSection, setActiveSection] =
     useState<(typeof REPORT_SECTIONS)[number]>("overview");
@@ -178,6 +181,7 @@ export function ReportShell({
           </div>
           <div className="flex items-center gap-3">
             <Badge variant="accent">Overall {report.scorecards.overall}</Badge>
+            <SaveReportButton reportId={reportId} initialSaved={isSaved} />
             <ReportExportButton reportId={reportId} />
           </div>
         </CardHeader>

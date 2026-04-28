@@ -1,57 +1,13 @@
-"use client";
-
-import { useState } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { requireUser } from "@/lib/auth";
+import { SettingsForm } from "@/components/settings/settings-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
-export default function SettingsPage() {
-  const [isSaving, setIsSaving] = useState(false);
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSaving(true);
-    const payload = Object.fromEntries(new FormData(event.currentTarget).entries());
-
-    const response = await fetch("/api/settings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const data = await response.json();
-    setIsSaving(false);
-
-    if (!response.ok) {
-      toast.error(data.error || "Unable to update settings.");
-      return;
-    }
-
-    toast.success("Settings updated.");
-  }
+export default async function SettingsPage() {
+  const user = await requireUser();
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <Card>
-        <CardHeader>
-          <CardTitle>Workspace settings</CardTitle>
-          <CardDescription>Update your identity details and default workspace preferences.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <div className="space-y-2">
-              <Label htmlFor="name">Display name</Label>
-              <Input id="name" name="name" placeholder="Your name" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="company">Company</Label>
-              <Input id="company" name="company" placeholder="Your company" />
-            </div>
-            <Button disabled={isSaving}>{isSaving ? "Saving..." : "Save changes"}</Button>
-          </form>
-        </CardContent>
-      </Card>
+      <SettingsForm defaultName={user.name} defaultCompany={user.company} />
       <Card>
         <CardHeader>
           <CardTitle>Plan capabilities</CardTitle>

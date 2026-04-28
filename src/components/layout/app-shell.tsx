@@ -35,7 +35,7 @@ export function AppShell({
   return (
     <div className="min-h-screen">
       <div className="mx-auto flex min-h-screen max-w-[1600px] gap-6 px-4 py-4 lg:px-6">
-        <aside className="glass hidden w-76 rounded-[32px] border border-border/80 p-4 lg:flex lg:flex-col">
+        <aside className="glass hidden w-[19rem] rounded-[32px] border border-border/80 p-4 lg:flex lg:flex-col">
           <Link href="/dashboard" className="flex items-center gap-3 rounded-3xl px-3 py-3">
             <img src="/brand/logo.svg" alt="WebIntel AI" className="h-10 w-auto" />
           </Link>
