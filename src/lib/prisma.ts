@@ -1,16 +1,18 @@
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
+import { getEnv } from "@/lib/env";
 
 declare global {
   var __webintelPrisma: PrismaClient | undefined;
 }
 
 export function getPrisma() {
-  if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL is not configured.");
-  }
-
   if (!globalThis.__webintelPrisma) {
-    globalThis.__webintelPrisma = new PrismaClient();
+    const adapter = new PrismaPg({
+      connectionString: getEnv().DATABASE_URL,
+    });
+
+    globalThis.__webintelPrisma = new PrismaClient({ adapter });
   }
 
   return globalThis.__webintelPrisma;

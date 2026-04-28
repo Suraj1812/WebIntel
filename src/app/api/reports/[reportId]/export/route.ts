@@ -31,11 +31,15 @@ export async function GET(
   const searchParams = new URL(request.url).searchParams;
   const whiteLabel = searchParams.get("whiteLabel") === "1";
   const fileName = `${slugify(report.domain, { lower: true })}-${report.id}.pdf`;
-  const buffer = await renderReportPdf(report.reportData as WebsiteReport, { whiteLabel });
-  await writeExportFile(fileName, new Uint8Array(buffer));
+  const pdfBytes = await renderReportPdf(report.reportData as WebsiteReport, { whiteLabel });
+  const pdfBuffer = pdfBytes.buffer.slice(
+    pdfBytes.byteOffset,
+    pdfBytes.byteOffset + pdfBytes.byteLength,
+  ) as ArrayBuffer;
+  await writeExportFile(fileName, pdfBytes);
   await logUsage(user.id, "REPORT_EXPORTED", { reportId, whiteLabel });
 
-  return new Response(buffer, {
+  return new Response(pdfBuffer, {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="${fileName}"`,

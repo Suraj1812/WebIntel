@@ -97,5 +97,59 @@ export async function renderReportPdf(
   );
 
   const instance = pdf(doc);
-  return instance.toBuffer();
+  const output = await (instance as unknown as { toBuffer: () => Promise<unknown> }).toBuffer();
+  return normalizePdfOutput(output);
+}
+
+async function normalizePdfOutput(output: unknown) {
+  if (output instanceof Uint8Array) {
+    return output;
+  }
+
+  if (output instanceof ArrayBuffer) {
+    return new Uint8Array(output);
+  }
+
+  if (output && typeof output === "object" && "getReader" in output) {
+    const reader = (output as ReadableStream<Uint8Array>).getReader();
+    const chunks: Uint8Array[] = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        break;
+      }
+
+      if (value) {
+        chunks.push(value);
+      }
+    }
+
+    return concatChunks(chunks);
+  }
+
+  if (output && typeof output === "object" && Symbol.asyncIterator in output) {
+    const chunks: Uint8Array[] = [];
+    for await (const chunk of output as AsyncIterable<Uint8Array | Buffer>) {
+      chunks.push(chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk));
+    }
+
+    return concatChunks(chunks);
+  }
+
+  const arrayBuffer = await new Response(output as BodyInit).arrayBuffer();
+  return new Uint8Array(arrayBuffer);
+}
+
+function concatChunks(chunks: Uint8Array[]) {
+  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  const merged = new Uint8Array(totalLength);
+  let offset = 0;
+
+  for (const chunk of chunks) {
+    merged.set(chunk, offset);
+    offset += chunk.length;
+  }
+
+  return merged;
 }
