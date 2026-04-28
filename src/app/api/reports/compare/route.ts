@@ -21,8 +21,8 @@ export async function POST(request: Request) {
     },
   });
 
-  const left = reports.find((report) => report.id === body.leftId);
-  const right = reports.find((report) => report.id === body.rightId);
+  const left = reports.find((report: (typeof reports)[number]) => report.id === body.leftId);
+  const right = reports.find((report: (typeof reports)[number]) => report.id === body.rightId);
 
   if (!left?.reportData || !right?.reportData) {
     return NextResponse.json({ error: "One or both reports were not found." }, { status: 404 });

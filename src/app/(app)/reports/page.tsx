@@ -17,7 +17,7 @@ export default async function ReportsPage() {
         <CardTitle>All reports</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4 lg:grid-cols-2">
-        {reports.map((report) => (
+        {reports.map((report: (typeof reports)[number]) => (
           <Link
             key={report.id}
             href={`/reports/${report.id}`}

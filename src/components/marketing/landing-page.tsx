@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Bot, Camera, Globe2, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
 import { APP_TAGLINE, SUBSCRIPTION_PLANS } from "@/lib/constants";

@@ -85,7 +85,7 @@ export default async function DashboardPage() {
         </CardHeader>
         <CardContent className="space-y-3">
           {reports.length ? (
-            reports.map((report) => (
+            reports.map((report: (typeof reports)[number]) => (
               <Link
                 key={report.id}
                 href={`/reports/${report.id}`}

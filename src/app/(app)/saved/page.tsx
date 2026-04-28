@@ -17,7 +17,7 @@ export default async function SavedPage() {
         <CardTitle>Saved reports</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4 lg:grid-cols-2">
-        {savedReports.map((savedReport) => (
+        {savedReports.map((savedReport: (typeof savedReports)[number]) => (
           <Link
             key={savedReport.id}
             href={`/reports/${savedReport.reportId}`}

@@ -20,8 +20,8 @@ export default async function ComparePage({
     take: 20,
   });
   const { left, right } = await searchParams;
-  const leftReport = reports.find((report) => report.id === left);
-  const rightReport = reports.find((report) => report.id === right);
+  const leftReport = reports.find((report: (typeof reports)[number]) => report.id === left);
+  const rightReport = reports.find((report: (typeof reports)[number]) => report.id === right);
 
   return (
     <div className="space-y-6">
@@ -35,7 +35,7 @@ export default async function ComparePage({
             <Input name="right" defaultValue={right} placeholder="Right report id" list="report-options" />
             <Button type="submit">Compare</Button>
             <datalist id="report-options">
-              {reports.map((report) => (
+              {reports.map((report: (typeof reports)[number]) => (
                 <option key={report.id} value={report.id}>
                   {report.domain}
                 </option>

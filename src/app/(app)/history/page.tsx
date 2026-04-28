@@ -16,7 +16,7 @@ export default async function HistoryPage() {
         <CardTitle>Historical scans</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {reports.map((report) => (
+        {reports.map((report: (typeof reports)[number]) => (
           <Link
             key={report.id}
             href={`/reports/${report.id}`}
