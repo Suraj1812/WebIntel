@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -38,24 +38,25 @@ export function SettingsForm({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Workspace settings</CardTitle>
-        <CardDescription>Update your identity details and default workspace preferences.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <Label htmlFor="name">Display name</Label>
-            <Input id="name" name="name" defaultValue={defaultName} placeholder="Your name" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="company">Company</Label>
-            <Input id="company" name="company" defaultValue={defaultCompany || ""} placeholder="Your company" />
-          </div>
-          <Button disabled={isSaving}>{isSaving ? "Saving..." : "Save changes"}</Button>
-        </form>
-      </CardContent>
-    </Card>
+    <section className="surface-strong rounded-[2.3rem] p-6 md:p-7">
+      <Badge variant="accent">Workspace identity</Badge>
+      <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em]">Keep the people and company details current.</h2>
+      <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+        These details shape how reports and exports feel when they move across teams.
+      </p>
+      <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
+        <div className="space-y-2">
+          <Label htmlFor="name">Display name</Label>
+          <Input id="name" name="name" defaultValue={defaultName} placeholder="Your name" className="h-[3.25rem]" />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="company">Company</Label>
+          <Input id="company" name="company" defaultValue={defaultCompany || ""} placeholder="Your company" className="h-[3.25rem]" />
+        </div>
+        <Button disabled={isSaving} size="lg">
+          {isSaving ? "Saving..." : "Save changes"}
+        </Button>
+      </form>
+    </section>
   );
 }
