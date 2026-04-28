@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -40,32 +40,31 @@ export default function LoginPage() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-3xl">Welcome back</CardTitle>
-        <CardDescription>Sign in to continue managing saved reports, exports, and comparisons.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" name="password" type="password" required />
-          </div>
-          <Button className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
-        <p className="mt-6 text-sm text-muted-foreground">
-          No account yet?{" "}
-          <Link href="/signup" className="text-primary hover:underline">
-            Create one
-          </Link>
-        </p>
-      </CardContent>
-    </Card>
+    <div className="surface-strong rounded-[2.3rem] p-7 md:p-8">
+      <Badge variant="accent">Welcome back</Badge>
+      <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em]">Open your audit workspace.</h1>
+      <p className="mt-3 text-base leading-7 text-muted-foreground">
+        Sign in to review saved reports, compare competitors, and keep your benchmark history intact.
+      </p>
+      <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" name="email" type="email" required className="h-[3.25rem]" />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input id="password" name="password" type="password" required className="h-[3.25rem]" />
+        </div>
+        <Button className="w-full" size="lg" disabled={isLoading}>
+          {isLoading ? "Signing in..." : "Sign in"}
+        </Button>
+      </form>
+      <p className="mt-6 text-sm leading-6 text-muted-foreground">
+        No account yet?{" "}
+        <Link href="/signup" className="font-medium text-foreground underline-offset-4 hover:underline">
+          Create one
+        </Link>
+      </p>
+    </div>
   );
 }

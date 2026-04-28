@@ -1,261 +1,491 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Bot, Camera, Globe2, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  BellRing,
+  Bookmark,
+  Camera,
+  CheckCircle2,
+  Globe2,
+  Radar,
+  ScanSearch,
+  ShieldCheck,
+  Sparkles,
+  SplitSquareHorizontal,
+} from "lucide-react";
 import { APP_TAGLINE, SUBSCRIPTION_PLANS } from "@/lib/constants";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
-const features = [
+const ecosystem = ["Next.js", "Shopify", "WordPress", "Webflow", "HubSpot", "Framer"];
+
+const proofPoints = [
   {
-    icon: Globe2,
-    title: "Full-stack website intelligence",
-    copy: "Inspect design systems, SEO structure, business positioning, media, performance signals, and security posture from a single scan.",
+    title: "From screenshot to strategy",
+    copy: "You get design, SEO, trust, performance, and business observations in one report instead of five disconnected tools.",
   },
   {
-    icon: Camera,
-    title: "Dynamic screenshots and evidence",
-    copy: "Capture desktop, mobile, and full-page screenshots from static and JavaScript-heavy websites with one workflow.",
+    title: "Built for work that repeats",
+    copy: "Saved reports, history, compare mode, and exports turn a one-off audit into a reusable operating system.",
   },
   {
-    icon: Bot,
-    title: "AI reasoning that sounds like strategy",
-    copy: "Turn raw signals into monetization hypotheses, trust gaps, conversion feedback, and actionable growth recommendations.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Production-grade guardrails",
-    copy: "Built-in URL validation, SSRF prevention, rate limits, auth protection, and durable report storage.",
+    title: "Evidence, not vibes",
+    copy: "Every conclusion is grounded in rendered screenshots, extracted metadata, stack signals, and page structure.",
   },
 ];
 
-const testimonials = [
+const useCases = [
   {
-    name: "Mina Patel",
-    role: "Growth Consultant",
-    quote:
-      "WebIntel AI replaced three browser extensions, a manual SEO checklist, and our first-pass competitor teardown.",
+    title: "Pitch prep",
+    copy: "Walk into client and investor meetings with a real teardown, not a page of loose notes.",
+    metric: "10-minute prep cycle",
+    icon: Radar,
   },
   {
-    name: "Jordan Brooks",
-    role: "Agency Founder",
-    quote:
-      "The report feels premium enough to send to clients without editing, and the side-by-side comparisons close projects faster.",
+    title: "Competitor watch",
+    copy: "Track how peers evolve positioning, design quality, trust cues, and conversion patterns over time.",
+    metric: "Compare mode + history",
+    icon: SplitSquareHorizontal,
   },
   {
-    name: "Avery Kim",
-    role: "Product Marketer",
-    quote:
-      "We use it to benchmark launch pages before campaigns go live. The trust and conversion insights are consistently sharp.",
+    title: "Pre-launch review",
+    copy: "Pressure test a launch page before paid traffic arrives and catch weak CTAs, missing trust, or structural SEO issues.",
+    metric: "Scorecards before spend",
+    icon: ScanSearch,
+  },
+  {
+    title: "Diligence support",
+    copy: "Get a sharp first pass on the quality of a company’s web presence before deeper commercial analysis starts.",
+    metric: "Faster first read",
+    icon: ShieldCheck,
   },
 ];
+
+const comparisonRows = [
+  ["Rendered screenshots", "Desktop, mobile, and full page", "Usually one view", "Rarely included", "Manual capture"],
+  ["Business analysis", "Included in every report", "Not included", "Surface-level at best", "Depends on reviewer"],
+  ["Compare history", "Built into the workspace", "No memory layer", "Usually export-only", "Spreadsheet work"],
+  ["Export quality", "Client-ready PDF", "Screenshot archive", "CSV or score export", "Manual formatting"],
+];
+
+const reportModules = [
+  "Overview and screenshots",
+  "Design intelligence and color extraction",
+  "SEO structure and score",
+  "Tech stack and infrastructure signals",
+  "Security posture and header checks",
+  "AI recommendations for growth and trust",
+];
+
+const faqs = [
+  {
+    question: "What makes WebIntel different from an SEO tool?",
+    answer:
+      "SEO is only one layer. WebIntel combines rendered screenshots, stack detection, trust cues, content analysis, and business recommendations into a single report.",
+  },
+  {
+    question: "Can it handle JavaScript-heavy websites?",
+    answer:
+      "Yes. The scan pipeline uses Playwright to render modern frontends before extraction, so React, Next.js, Shopify, and similar stacks are part of the intended use case.",
+  },
+  {
+    question: "Who gets the most value from it?",
+    answer:
+      "Agencies, growth teams, product marketers, CRO specialists, founders, and diligence teams tend to get the fastest return because they audit sites repeatedly.",
+  },
+  {
+    question: "What happens after the first scan?",
+    answer:
+      "That is where the product gets sticky. Saved reports, compare mode, history, exports, and workspace usage all make the next audit faster and more comparable.",
+  },
+];
+
+const reveal = {
+  initial: { opacity: 0, y: 14 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.35 },
+} as const;
 
 export function LandingPage() {
   return (
-    <div className="pb-20">
-      <section className="mx-auto grid max-w-7xl gap-10 px-6 pb-20 pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="space-y-8"
-        >
-          <Badge>Website intelligence for operators, agencies, and growth teams</Badge>
-          <div className="space-y-4">
-            <h1 className="max-w-3xl text-balance text-5xl font-semibold leading-tight tracking-tight text-foreground md:text-7xl">
-              Know any website before anyone else.
-            </h1>
-            <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
-              {APP_TAGLINE} WebIntel AI turns a public URL into screenshots, SEO audits, stack detection, business insights, and a polished client-ready report.
-            </p>
-          </div>
-          <form
-            action="/scan"
-            className="glass flex flex-col gap-3 rounded-[28px] border border-border p-3 shadow-lg md:flex-row"
-          >
-            <Input
-              name="url"
-              placeholder="Enter a public website URL"
-              className="h-14 rounded-[22px] border-0 bg-transparent text-base shadow-none focus:ring-0"
-            />
-            <Button type="submit" className="h-14 rounded-[22px] px-7 text-base">
-              Analyze website
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </form>
-          <div className="grid gap-3 text-sm text-muted-foreground md:grid-cols-3">
-            <div className="rounded-3xl border border-border bg-background/50 p-4">
-              <div className="font-semibold text-foreground">18 report modules</div>
-              <p className="mt-1">Everything from screenshots to trust, performance, and monetization.</p>
+    <div className="pb-24">
+      <section className="marketing-shell section-shell pt-10">
+        <div className="grid gap-10 xl:grid-cols-[1.03fr_0.97fr]">
+          <motion.div {...reveal} className="space-y-8">
+            <div className="eyebrow">Website intelligence for teams that audit for a living</div>
+            <div className="space-y-5">
+              <h1 className="display-title max-w-5xl text-balance">
+                Know what a website gets right before you spend money copying it or fixing it.
+              </h1>
+              <p className="lead-copy">
+                {APP_TAGLINE} WebIntel AI turns a public URL into screenshots, scorecards, stack signals, and sharp recommendations you can keep, compare, and ship.
+              </p>
             </div>
-            <div className="rounded-3xl border border-border bg-background/50 p-4">
-              <div className="font-semibold text-foreground">Built for modern sites</div>
-              <p className="mt-1">Playwright rendering handles React, Next.js, Shopify, and JS-heavy pages.</p>
-            </div>
-            <div className="rounded-3xl border border-border bg-background/50 p-4">
-              <div className="font-semibold text-foreground">Premium export flow</div>
-              <p className="mt-1">Generate a polished PDF report you can keep, share, or white-label.</p>
-            </div>
-          </div>
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.12 }}
-          className="relative"
-          id="reports"
-        >
-          <Card className="overflow-hidden p-0">
-            <div className="grid-bg relative overflow-hidden rounded-[28px] border border-border/50 bg-background/40 p-6">
-              <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-primary/8 to-transparent" />
-              <div className="relative z-10 grid gap-4">
-                <div className="flex items-center justify-between rounded-3xl border border-border bg-background/70 p-4">
+            <form action="/scan" className="surface-strong rounded-[2rem] p-3 md:flex md:items-center md:gap-3">
+              <Input
+                name="url"
+                placeholder="Enter a public website URL"
+                className="h-14 border-0 bg-transparent text-base shadow-none focus:ring-0"
+              />
+              <div className="mt-3 flex gap-3 md:mt-0">
+                <Button type="submit" size="lg" className="min-w-[12rem]">
+                  Run audit
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+                <Button asChild variant="outline" size="lg" href="/pricing">
+                  See pricing
+                </Button>
+              </div>
+            </form>
+
+            <div className="grid gap-3 md:grid-cols-3">
+              {[
+                "Rendered evidence for modern websites",
+                "Saved reports and competitor compare mode",
+                "Private workspace with export-ready outputs",
+              ].map((line) => (
+                <div key={line} className="surface-muted rounded-[1.6rem] px-4 py-4 text-sm leading-6 text-muted-foreground">
+                  {line}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div {...reveal} transition={{ duration: 0.4, delay: 0.06 }} className="xl:pl-4">
+            <div className="surface-strong grid-bg rounded-[2.4rem] p-5 md:p-6">
+              <div className="rounded-[1.5rem] border border-border bg-background/76 px-4 py-3">
+                <div className="flex items-center justify-between gap-4">
                   <div>
-                    <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                      Live report preview
+                    <div className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                      Live product preview
                     </div>
-                    <div className="mt-2 text-2xl font-semibold">linear.app</div>
+                    <div className="mt-2 text-2xl font-semibold tracking-[-0.04em]">linear.app</div>
                   </div>
-                  <Badge variant="accent">Overall score 88</Badge>
+                  <Badge variant="accent">Overall 88</Badge>
                 </div>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {[
-                    { label: "SEO", value: 91 },
-                    { label: "Design", value: 89 },
-                    { label: "Trust", value: 86 },
-                    { label: "Conversion", value: 84 },
-                  ].map((metric) => (
-                    <div
-                      key={metric.label}
-                      className="rounded-3xl border border-border bg-background/70 p-4"
-                    >
-                      <div className="text-sm text-muted-foreground">{metric.label}</div>
-                      <div className="mt-3 flex items-end justify-between">
-                        <div className="text-3xl font-semibold">{metric.value}</div>
-                        <TrendingUp className="h-4 w-4 text-primary" />
-                      </div>
+              </div>
+
+              <div className="mt-5 grid gap-4 lg:grid-cols-[0.84fr_1.16fr]">
+                <div className="space-y-4">
+                  <div className="rounded-[1.8rem] border border-border bg-background/78 p-4">
+                    <div className="text-sm font-semibold">Scan pipeline</div>
+                    <div className="mt-4 space-y-3">
+                      {[
+                        ["Rendering", "Desktop and mobile evidence ready"],
+                        ["Signals", "Stack, SEO, and trust checks parsed"],
+                        ["AI review", "Narrative findings written"],
+                      ].map(([title, copy], index) => (
+                        <div key={title} className="flex items-start gap-3">
+                          <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                            {index + 1}
+                          </div>
+                          <div>
+                            <div className="text-sm font-semibold">{title}</div>
+                            <div className="text-sm leading-6 text-muted-foreground">{copy}</div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                  <div className="rounded-[1.8rem] border border-border bg-background/78 p-4">
+                    <div className="text-sm font-semibold">Top recommendation</div>
+                    <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                      Strong visual discipline and product clarity. The biggest lift would come from adding proof near the first CTA and reducing friction around trial intent.
+                    </p>
+                  </div>
                 </div>
-                <div className="rounded-3xl border border-border bg-background/70 p-5">
+
+                <div className="rounded-[2rem] border border-border bg-card p-5">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-semibold">AI recommendation snapshot</div>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        Strong positioning and visual clarity, but the primary CTA needs more urgency and social proof.
-                      </p>
+                      <div className="text-sm text-muted-foreground">Executive snapshot</div>
+                      <div className="mt-1 text-xl font-semibold tracking-[-0.04em]">Why this page converts</div>
                     </div>
-                    <Sparkles className="h-6 w-6 text-primary" />
+                    <Sparkles className="h-5 w-5 text-accent" />
+                  </div>
+                  <div className="mt-5 grid gap-3 md:grid-cols-2">
+                    {[
+                      ["SEO", "91"],
+                      ["Design", "89"],
+                      ["Trust", "86"],
+                      ["Conversion", "84"],
+                    ].map(([label, score]) => (
+                      <div key={label} className="rounded-[1.4rem] bg-muted/70 px-4 py-4">
+                        <div className="text-sm text-muted-foreground">{label}</div>
+                        <div className="mt-2 text-3xl font-semibold tracking-[-0.05em]">{score}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-5 rounded-[1.6rem] border border-border bg-background/72 p-4">
+                    <div className="flex items-center gap-3 text-sm font-semibold">
+                      <BellRing className="h-4 w-4 text-accent" />
+                      Suggested retention loop
+                    </div>
+                    <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                      Save this report, compare it against your closest competitor, and rerun weekly to track whether headline clarity and trust cues improve.
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-          </Card>
-        </motion.div>
+          </motion.div>
+        </div>
       </section>
 
-      <section id="features" className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-        <div className="mb-8 max-w-2xl">
-          <Badge variant="muted">What the platform covers</Badge>
-          <h2 className="mt-4 text-4xl font-semibold tracking-tight">
-            Every signal you need before you pitch, invest, redesign, or compete.
-          </h2>
+      <section className="marketing-shell">
+        <div className="surface-panel rounded-[2rem] px-5 py-4">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">Works across the stack</span>
+            {ecosystem.map((item) => (
+              <span key={item} className="rounded-full border border-border bg-background/72 px-3 py-2">
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
+      </section>
+
+      <section id="why-webintel" className="marketing-shell section-shell">
+        <div className="grid gap-8 xl:grid-cols-[1fr_1.05fr]">
+          <motion.div {...reveal} className="space-y-5">
+            <Badge variant="accent">Why teams stick with it</Badge>
+            <h2 className="section-title max-w-2xl">
+              Most audit tools stop at one layer. Real decisions need the full picture.
+            </h2>
+            <p className="lead-copy">
+              The product is designed around repeat work: pitch prep, launch review, competitive teardowns, and benchmark tracking. That is why the workspace matters as much as the first report.
+            </p>
+          </motion.div>
+          <div className="grid gap-4">
+            {proofPoints.map((item, index) => (
+              <motion.div
+                key={item.title}
+                {...reveal}
+                transition={{ duration: 0.35, delay: index * 0.04 }}
+                className="surface-panel rounded-[2rem] px-6 py-6"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold tracking-[-0.03em]">{item.title}</h3>
+                    <p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground">{item.copy}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="use-cases" className="marketing-shell section-shell pt-0">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <Badge variant="muted">Common use cases</Badge>
+            <h2 className="section-title mt-4 max-w-3xl">
+              Built for work that needs both speed and judgment.
+            </h2>
+          </div>
+          <p className="max-w-xl text-sm leading-7 text-muted-foreground">
+            These are the moments where teams usually bounce between screenshots, SEO tools, spreadsheets, and loose notes. WebIntel keeps them in one system.
+          </p>
+        </div>
+        <div className="mt-8 grid gap-4 lg:grid-cols-2">
+          {useCases.map((item, index) => {
+            const Icon = item.icon;
             return (
               <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08 }}
+                key={item.title}
+                {...reveal}
+                transition={{ duration: 0.35, delay: index * 0.04 }}
+                className={`surface-panel rounded-[2rem] p-6 ${index === 0 ? "lg:col-span-2" : ""}`}
               >
-                <Card className="h-full">
-                  <CardHeader>
-                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="max-w-2xl">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
                       <Icon className="h-5 w-5" />
                     </div>
-                    <CardTitle>{feature.title}</CardTitle>
-                    <CardDescription>{feature.copy}</CardDescription>
-                  </CardHeader>
-                </Card>
+                    <h3 className="mt-5 text-2xl font-semibold tracking-[-0.04em]">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.copy}</p>
+                  </div>
+                  <div className="rounded-full border border-border bg-background/70 px-4 py-2 text-sm font-medium text-foreground">
+                    {item.metric}
+                  </div>
+                </div>
               </motion.div>
             );
           })}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-        <div className="grid gap-5 lg:grid-cols-3">
-          {testimonials.map((item) => (
-            <Card key={item.name}>
-              <CardHeader>
-                <CardDescription className="text-base leading-7 text-foreground">
-                  “{item.quote}”
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <div className="font-semibold">{item.name}</div>
-                <div className="text-sm text-muted-foreground">{item.role}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <Badge variant="muted">Pricing</Badge>
-            <h2 className="mt-4 text-4xl font-semibold">Start free, scale when the signal gets valuable.</h2>
-          </div>
-          <Button asChild variant="outline" href="/pricing">
-            See full pricing
-          </Button>
-        </div>
-        <div className="mt-8 grid gap-5 lg:grid-cols-3">
-          {SUBSCRIPTION_PLANS.map((plan) => (
-            <Card key={plan.id} className={plan.id === "PRO" ? "border-primary/30" : ""}>
-              <CardHeader>
-                <CardTitle>{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
-                <div className="pt-2 text-4xl font-semibold">{plan.price}</div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {plan.bullets.map((bullet) => (
-                  <div key={bullet} className="rounded-2xl border border-border bg-background/45 px-4 py-3 text-sm">
-                    {bullet}
-                  </div>
-                ))}
-                <Button asChild className="mt-4 w-full" href="/signup">
-                  Start with {plan.name}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 pt-10 lg:px-8">
-        <Card className="overflow-hidden">
-          <CardContent className="grid gap-8 p-8 lg:grid-cols-[1fr_auto] lg:items-center lg:p-10">
+      <section id="compare" className="marketing-shell section-shell pt-0">
+        <div className="surface-strong rounded-[2.5rem] p-6 md:p-8">
+          <div className="grid gap-8 xl:grid-cols-[0.84fr_1.16fr]">
             <div>
-              <Badge>Ready to scan</Badge>
-              <h2 className="mt-4 text-4xl font-semibold">Run your first intelligence report in minutes.</h2>
-              <p className="mt-3 max-w-2xl text-lg text-muted-foreground">
-                Go from a plain URL to a strategic report with screenshots, audit scores, and AI insights you can act on immediately.
+              <Badge variant="accent">Where it wins</Badge>
+              <h2 className="section-title mt-4">
+                It closes the gap between surface-level tooling and a real teardown.
+              </h2>
+              <p className="mt-4 text-base leading-8 text-muted-foreground">
+                Most alternatives solve one narrow part of the problem. WebIntel is built for the moment you need the whole story in a form a team can actually use.
               </p>
             </div>
+            <div className="overflow-hidden rounded-[2rem] border border-border bg-background/72">
+              <div className="grid grid-cols-[1.1fr_repeat(4,0.8fr)] gap-px bg-border text-sm">
+                {["Capability", "WebIntel AI", "Screenshot tools", "SEO tools", "Manual audit"].map((cell, index) => (
+                  <div key={cell} className={`bg-background/94 px-4 py-4 ${index === 0 ? "font-semibold text-foreground" : "text-muted-foreground"}`}>
+                    {cell}
+                  </div>
+                ))}
+                {comparisonRows.map((row) =>
+                  row.map((cell, index) => (
+                    <div key={`${row[0]}-${cell}`} className={`bg-background/80 px-4 py-4 leading-6 ${index === 0 ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+                      {cell}
+                    </div>
+                  )),
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="marketing-shell section-shell pt-0">
+        <div className="grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
+          <motion.div {...reveal} className="surface-panel rounded-[2.4rem] p-7">
+            <Badge variant="muted">What ships in every audit</Badge>
+            <h2 className="section-title mt-4">A report structure designed to be reused, not skimmed once and forgotten.</h2>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {reportModules.map((item) => (
+                <div key={item} className="rounded-[1.5rem] border border-border bg-background/74 px-4 py-4 text-sm leading-7">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div {...reveal} transition={{ duration: 0.35, delay: 0.04 }} className="surface-panel rounded-[2.4rem] p-7">
+            <Badge variant="muted">Signals that increase retention</Badge>
+            <h2 className="section-title mt-4">The workspace gets better once you have more than one report.</h2>
+            <div className="mt-6 space-y-4">
+              {[
+                {
+                  icon: Bookmark,
+                  title: "Saved benchmarks",
+                  copy: "Pin the sites you always reference so future audits are grounded in something consistent.",
+                },
+                {
+                  icon: BellRing,
+                  title: "Weekly review rhythm",
+                  copy: "Rerun key pages on a schedule and track whether score movement matches your intent.",
+                },
+                {
+                  icon: SplitSquareHorizontal,
+                  title: "Competitor compare",
+                  copy: "Put two reports side by side so positioning, trust, and conversion gaps are obvious to the room.",
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.title} className="flex gap-4 rounded-[1.6rem] border border-border bg-background/74 p-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <div className="text-lg font-semibold tracking-[-0.03em]">{item.title}</div>
+                      <div className="mt-2 text-sm leading-7 text-muted-foreground">{item.copy}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section id="pricing" className="marketing-shell section-shell pt-0">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <Badge variant="accent">Pricing</Badge>
+            <h2 className="section-title mt-4">Start with one audit. Stay for the benchmark system.</h2>
+          </div>
+          <p className="max-w-xl text-sm leading-7 text-muted-foreground">
+            The value compounds when teams save, compare, rerun, and export reports regularly. Pricing is set around that behavior.
+          </p>
+        </div>
+        <div className="mt-8 grid gap-5 lg:grid-cols-3">
+          {SUBSCRIPTION_PLANS.map((plan, index) => (
+            <div
+              key={plan.id}
+              className={`rounded-[2.2rem] p-[1px] ${index === 1 ? "bg-gradient-to-b from-primary/60 to-accent/30" : "bg-border"}`}
+            >
+              <div className={`h-full rounded-[2.1rem] ${index === 1 ? "surface-strong" : "surface-panel"} p-6`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-lg font-semibold tracking-[-0.03em]">{plan.name}</div>
+                    <div className="mt-2 text-sm leading-7 text-muted-foreground">{plan.description}</div>
+                  </div>
+                  {index === 1 ? <Badge variant="accent">Best fit</Badge> : null}
+                </div>
+                <div className="mt-6 text-5xl font-semibold tracking-[-0.06em]">
+                  {plan.price}
+                  <span className="ml-2 text-base font-medium text-muted-foreground">/ month</span>
+                </div>
+                <div className="mt-6 space-y-3">
+                  {plan.bullets.map((bullet) => (
+                    <div key={bullet} className="rounded-[1.4rem] border border-border bg-background/72 px-4 py-3 text-sm">
+                      {bullet}
+                    </div>
+                  ))}
+                </div>
+                <Button asChild className="mt-6 w-full" variant={index === 1 ? "default" : "secondary"} href="/signup">
+                  Choose {plan.name}
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="marketing-shell section-shell pt-0">
+        <div className="grid gap-4 lg:grid-cols-2">
+          {faqs.map((item, index) => (
+            <motion.div
+              key={item.question}
+              {...reveal}
+              transition={{ duration: 0.35, delay: index * 0.03 }}
+              className="surface-panel rounded-[2rem] p-6"
+            >
+              <h3 className="text-xl font-semibold tracking-[-0.03em]">{item.question}</h3>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.answer}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <section className="marketing-shell pt-4">
+        <div className="surface-strong rounded-[2.6rem] px-7 py-9 text-center">
+          <Badge variant="accent">Ready to audit</Badge>
+          <h2 className="section-title mt-4">
+            Run the first report, save the important ones, and build a benchmark library your team actually revisits.
+          </h2>
+          <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-muted-foreground">
+            This is the difference between a screenshot tool and a product. WebIntel helps you remember what good looked like last week, last quarter, and against the competitor you care about most.
+          </p>
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" href="/signup">
-              Start Free
+              Start free
             </Button>
-          </CardContent>
-        </Card>
+            <Button asChild size="lg" variant="outline" href="/scan">
+              Try a live audit
+            </Button>
+          </div>
+        </div>
       </section>
     </div>
   );

@@ -1,51 +1,53 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
-import { APP_NAME } from "@/lib/constants";
+import { BrandLockup } from "@/components/shared/brand-lockup";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 export async function MarketingHeader() {
   const user = await getCurrentUser();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/50 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        <Link href="/" className="flex items-center gap-3 font-semibold">
-          <img src="/brand/logo.svg" alt={APP_NAME} className="h-10 w-auto" />
-          <div>
-            <div className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
-              WebIntel
-            </div>
-            <div className="text-lg text-foreground">AI</div>
+    <header className="sticky top-0 z-40 px-4 pt-4 sm:px-6 lg:px-8">
+      <div className="marketing-shell surface-panel rounded-[2rem] px-4 py-3 backdrop-blur-md md:px-5">
+        <div className="flex items-center justify-between gap-4">
+          <Link href="/" className="min-w-0">
+            <BrandLockup />
+          </Link>
+          <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground lg:flex">
+            <Link href="/#why-webintel" className="transition-colors hover:text-foreground">
+              Why WebIntel
+            </Link>
+            <Link href="/#use-cases" className="transition-colors hover:text-foreground">
+              Use cases
+            </Link>
+            <Link href="/#compare" className="transition-colors hover:text-foreground">
+              Compare
+            </Link>
+            <Link href="/pricing" className="transition-colors hover:text-foreground">
+              Pricing
+            </Link>
+          </nav>
+          <div className="flex items-center gap-2">
+            {user ? (
+              <>
+                <Button asChild variant="outline" href="/reports">
+                  Report library
+                </Button>
+                <Button asChild href="/dashboard">
+                  Open workspace
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="ghost" href="/login">
+                  Log in
+                </Button>
+                <Button asChild href="/signup">
+                  Start free
+                </Button>
+              </>
+            )}
           </div>
-        </Link>
-        <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
-          <Link href="#features" className="hover:text-foreground">
-            Features
-          </Link>
-          <Link href="#reports" className="hover:text-foreground">
-            Demo
-          </Link>
-          <Link href="/pricing" className="hover:text-foreground">
-            Pricing
-          </Link>
-        </nav>
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          {user ? (
-            <Button asChild href="/dashboard">
-              Open Dashboard
-            </Button>
-          ) : (
-            <>
-              <Button asChild variant="ghost" href="/login">
-                Log in
-              </Button>
-              <Button asChild href="/signup">
-                Start Free
-              </Button>
-            </>
-          )}
         </div>
       </div>
     </header>
