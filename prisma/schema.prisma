@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  FREE
+  PRO
+  BUSINESS
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum ReportStatus {
+  QUEUED
+  PROCESSING
+  COMPLETE
+  FAILED
+}
+
+enum UsageAction {
+  SIGNUP
+  LOGIN
+  SCAN_STARTED
+  SCAN_COMPLETED
+  SCAN_FAILED
+  REPORT_EXPORTED
+  REPORT_SAVED
+  SETTINGS_UPDATED
+}
+
+model User {
+  id             String         @id @default(cuid())
+  email          String         @unique
+  passwordHash   String
+  name           String
+  company        String?
+  avatarUrl      String?
+  role           String         @default("user")
+  plan           Plan           @default(FREE)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  reports        Report[]
+  savedReports   SavedReport[]
+  subscriptions  Subscription[]
+  usageLogs      UsageLog[]
+}
+
+model Report {
+  id                String       @id @default(cuid())
+  userId            String
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  url               String
+  normalizedUrl     String
+  domain            String
+  status            ReportStatus @default(QUEUED)
+  progressStep      String?
+  errorMessage      String?
+  scoreOverall      Int          @default(0)
+  screenshotDesktop String?
+  screenshotMobile  String?
+  screenshotFull    String?
+  rawData           Json?
+  reportData        Json?
+  aiSummary         String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  savedBy           SavedReport[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([domain])
+}
+
+model SavedReport {
+  id        String   @id @default(cuid())
+  userId    String
+  reportId  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, reportId])
+}
+
+model Subscription {
+  id                String             @id @default(cuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan              Plan
+  status            SubscriptionStatus @default(TRIAL)
+  stripeCustomerId  String?            @unique
+  stripePriceId     String?
+  currentPeriodEnds DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model UsageLog {
+  id        String      @id @default(cuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    UsageAction
+  metadata  Json?
+  createdAt DateTime    @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+}
