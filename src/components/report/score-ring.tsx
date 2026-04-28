@@ -15,7 +15,7 @@ export function ScoreRing({
   const strokeOffset = circumference - (normalizedScore / 100) * circumference;
 
   return (
-    <div className={cn("rounded-[28px] border border-border bg-background/50 p-5", className)}>
+    <div className={cn("rounded-[2rem] border border-border bg-background/72 p-5", className)}>
       <div className="flex items-center gap-4">
         <svg viewBox="0 0 100 100" className="h-20 w-20">
           <circle
@@ -51,7 +51,8 @@ export function ScoreRing({
         </svg>
         <div>
           <div className="text-sm text-muted-foreground">{label}</div>
-          <div className="text-lg font-semibold">Signal strength</div>
+          <div className="text-lg font-semibold tracking-[-0.03em]">Signal strength</div>
+          <div className="mt-1 text-sm text-muted-foreground">Higher means the report found stronger evidence here.</div>
         </div>
       </div>
     </div>
