@@ -1,6 +1,6 @@
 import slugify from "slugify";
 import { NextResponse } from "next/server";
-import { requireUser } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { getPrisma } from "@/lib/prisma";
 import { renderReportPdf } from "@/services/reports/pdf";
 import { writeExportFile } from "@/services/storage/local-storage";
@@ -11,7 +11,10 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ reportId: string }> },
 ) {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  }
   const { reportId } = await params;
 
   const report = await getPrisma().report.findFirst({

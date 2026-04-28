@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
-import { requireUser } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { applyRateLimit, getClientIpFromHeaders } from "@/lib/security";
 import { runScanPipeline } from "@/services/reports/pipeline";
 
 export async function POST(request: Request) {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  }
   const body = (await request.json()) as { url?: string };
   const url = body.url?.trim();
 
