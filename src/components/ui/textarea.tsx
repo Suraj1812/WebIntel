@@ -8,7 +8,7 @@ const Textarea = React.forwardRef<
   return (
     <textarea
       className={cn(
-        "min-h-28 w-full rounded-3xl border border-border bg-input px-4 py-3 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-primary focus:ring-4 focus:ring-ring/60",
+        "min-h-28 w-full rounded-[1.4rem] border border-border bg-input px-4 py-3 text-sm text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] outline-none transition duration-200 placeholder:text-muted-foreground focus:border-foreground/18 focus:ring-4 focus:ring-ring/70",
         className,
       )}
       ref={ref}

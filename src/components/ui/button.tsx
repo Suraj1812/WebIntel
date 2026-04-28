@@ -4,24 +4,26 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-full text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border text-sm font-medium tracking-[-0.01em] transition duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-40",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90",
+          "border-primary bg-primary text-primary-foreground shadow-[0_16px_36px_-18px_rgba(15,24,39,0.9)] hover:-translate-y-px hover:bg-primary/94",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/85",
-        ghost: "hover:bg-muted hover:text-foreground",
+          "border-border bg-card text-secondary-foreground shadow-[0_10px_26px_-18px_rgba(15,24,39,0.4)] hover:-translate-y-px hover:border-foreground/14 hover:bg-card/90",
+        ghost: "border-transparent bg-transparent text-muted-foreground hover:bg-muted/70 hover:text-foreground",
         outline:
-          "border border-border bg-transparent text-foreground hover:bg-muted",
+          "border-border bg-background/72 text-foreground hover:border-foreground/16 hover:bg-card",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/92",
+        quiet:
+          "border-transparent bg-muted/65 text-foreground hover:bg-muted",
       },
       size: {
         default: "h-11 px-5",
         sm: "h-9 px-4 text-xs",
-        lg: "h-12 px-6 text-base",
+        lg: "h-13 px-6 text-base",
         icon: "h-11 w-11",
       },
     },
