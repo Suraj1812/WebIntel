@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoaderCircle, Sparkles } from "lucide-react";
@@ -15,7 +15,7 @@ export function ScanWorkbench({ initialUrl = "" }: { initialUrl?: string }) {
   const [url, setUrl] = useState(initialUrl);
   const [activeStep, setActiveStep] = useState<ScanStepKey>("fetching");
   const [statusMessage, setStatusMessage] = useState("Waiting to start.");
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
   const router = useRouter();
 
   const currentIndex = useMemo(
@@ -26,62 +26,63 @@ export function ScanWorkbench({ initialUrl = "" }: { initialUrl?: string }) {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    startTransition(async () => {
-      try {
-        setStatusMessage("Connecting to the scan pipeline.");
-        const response = await fetch("/api/scans", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ url }),
-        });
+    try {
+      setIsPending(true);
+      setStatusMessage("Connecting to the scan pipeline.");
+      const response = await fetch("/api/scans", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url }),
+      });
 
-        if (!response.ok || !response.body) {
-          const payload = await response.json().catch(() => ({}));
-          throw new Error(payload.error || "Unable to start the scan.");
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) {
-            break;
-          }
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() || "";
-
-          for (const line of lines) {
-            if (!line.trim()) {
-              continue;
-            }
-
-            const eventPayload = JSON.parse(line) as ScanStreamEvent;
-            if (eventPayload.type === "progress") {
-              setActiveStep(eventPayload.step);
-              setStatusMessage(eventPayload.message);
-            }
-
-            if (eventPayload.type === "error") {
-              throw new Error(eventPayload.message);
-            }
-
-            if (eventPayload.type === "complete") {
-              toast.success("Report ready.");
-              router.push(`/reports/${eventPayload.reportId}`);
-              return;
-            }
-          }
-        }
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : "Scan failed.");
+      if (!response.ok || !response.body) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error || "Unable to start the scan.");
       }
-    });
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) {
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (!line.trim()) {
+            continue;
+          }
+
+          const eventPayload = JSON.parse(line) as ScanStreamEvent;
+          if (eventPayload.type === "progress") {
+            setActiveStep(eventPayload.step);
+            setStatusMessage(eventPayload.message);
+          }
+
+          if (eventPayload.type === "error") {
+            throw new Error(eventPayload.message);
+          }
+
+          if (eventPayload.type === "complete") {
+            toast.success("Report ready.");
+            router.push(`/reports/${eventPayload.reportId}`);
+            return;
+          }
+        }
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Scan failed.");
+    } finally {
+      setIsPending(false);
+    }
   }
 
   return (

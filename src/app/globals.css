@@ -88,8 +88,8 @@
   --radius-md: calc(var(--radius) - 0.25rem);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 0.5rem);
-  --font-sans: "Space Grotesk", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
+  --font-sans: "Avenir Next", "Segoe UI Variable", "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "SF Mono", "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
 }
 
 * {
