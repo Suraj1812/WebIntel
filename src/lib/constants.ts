@@ -3,6 +3,44 @@ import type { ScanStep, SubscriptionPlan } from "@/types/report";
 export const APP_NAME = "WebIntel AI";
 export const APP_TAGLINE = "Know Any Website Before Anyone Else.";
 
+export const PLAN_CONFIG: Record<SubscriptionPlan, {
+  id: SubscriptionPlan;
+  name: string;
+  price: string;
+  description: string;
+  bullets: string[];
+  monthlyScanCap: number | null;
+  cadenceTarget: number;
+}> = {
+  FREE: {
+    id: "FREE",
+    name: "Free",
+    price: "$0",
+    description: "For founders and marketers who need a fast first read on a website.",
+    bullets: ["3 scans monthly", "Saved reports", "Core intelligence report"],
+    monthlyScanCap: 3,
+    cadenceTarget: 3,
+  },
+  PRO: {
+    id: "PRO",
+    name: "Pro",
+    price: "$39",
+    description: "For consultants, agencies, and operators who audit sites every week.",
+    bullets: ["Unlimited scans", "White-label PDF exports", "Compare mode and history"],
+    monthlyScanCap: null,
+    cadenceTarget: 20,
+  },
+  BUSINESS: {
+    id: "BUSINESS",
+    name: "Business",
+    price: "$149",
+    description: "For revenue teams that need a durable benchmark and reporting workspace.",
+    bullets: ["Team workspace", "API access dashboard", "Priority exports and benchmarks"],
+    monthlyScanCap: null,
+    cadenceTarget: 60,
+  },
+};
+
 export const SUBSCRIPTION_PLANS: Array<{
   id: SubscriptionPlan;
   name: string;
@@ -10,27 +48,9 @@ export const SUBSCRIPTION_PLANS: Array<{
   description: string;
   bullets: string[];
 }> = [
-  {
-    id: "FREE",
-    name: "Free",
-    price: "$0",
-    description: "A lightweight entry point for founders and marketers validating sites.",
-    bullets: ["3 scans monthly", "1 saved comparison", "Core intelligence report"],
-  },
-  {
-    id: "PRO",
-    name: "Pro",
-    price: "$39",
-    description: "Built for agencies and consultants who need unlimited recurring audits.",
-    bullets: ["Unlimited scans", "White-label PDF exports", "Compare mode + history"],
-  },
-  {
-    id: "BUSINESS",
-    name: "Business",
-    price: "$149",
-    description: "For revenue teams that need a durable intelligence workspace.",
-    bullets: ["Team seats", "Priority AI analysis", "API access and usage insights"],
-  },
+  PLAN_CONFIG.FREE,
+  PLAN_CONFIG.PRO,
+  PLAN_CONFIG.BUSINESS,
 ];
 
 export const SCAN_STEPS: ScanStep[] = [
